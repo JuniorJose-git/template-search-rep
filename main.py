@@ -26,6 +26,6 @@ if __name__ == "__main__":
     print("Estado inicial:")
     print(initial)
 
-    print_result("BFS",  BFS().search(initial))
-    print_result("DFS",  DFS().search(initial))
-    print_result("A*",   AStar().search(initial))
+    print_result("BFS",  BFS(depth_limit=10).search(initial))
+    print_result("DFS",  DFS(depth_limit=10).search(initial))
+    print_result("A*",   AStar(depth_limit=10).search(initial))

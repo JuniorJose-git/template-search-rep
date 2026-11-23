@@ -24,20 +24,81 @@ class State:
     def blank_index(self) -> int:
         return self.tiles.index(0)
 
+    def move(self, direction: str, target: int) -> "State":
+        blank = self.blank_index
+        tiles = list(self.tiles)
+        tiles[blank], tiles[target] = tiles[target], tiles[blank]
+        return State(tuple(tiles), parent=self, action=direction, cost=self.cost + 1)
+
     def neighbors(self) -> List["State"]:
         """Retorna os estados filhos válidos a partir deste estado."""
-        # TODO: implemente a geração de estados filhos
-        raise NotImplementedError
+        blank = self.blank_index
+
+        children = []
+        if self.blank_index == 0: 
+                children.append(self.move("RIGHT", 1))
+                children.append(self.move("DOWN", 3))
+        
+        elif self.blank_index == 1:
+                children.append(self.move("LEFT", 0))
+                children.append(self.move("RIGHT", 2))
+                children.append(self.move("DOWN", 4))
+
+        elif self.blank_index == 2:
+                children.append(self.move("LEFT", 1))
+                children.append(self.move("DOWN", 5))
+
+        elif self.blank_index == 3:
+                children.append(self.move("UP", 0))
+                children.append(self.move("RIGHT", 4))
+                children.append(self.move("DOWN", 6))
+
+        elif self.blank_index == 4:
+                children.append(self.move("UP", 1))
+                children.append(self.move("LEFT", 3))
+                children.append(self.move("RIGHT", 5))
+                children.append(self.move("DOWN", 7))
+
+        elif self.blank_index == 5:
+                children.append(self.move("UP", 2))
+                children.append(self.move("LEFT", 4))
+                children.append(self.move("DOWN", 8))
+
+        elif self.blank_index == 6:
+                children.append(self.move("UP", 3))
+                children.append(self.move("RIGHT", 7))
+
+        elif self.blank_index == 7:
+                children.append(self.move("UP", 4))
+                children.append(self.move("LEFT", 6))
+                children.append(self.move("RIGHT", 8))
+
+        elif self.blank_index == 8:
+                children.append(self.move("UP", 5))
+                children.append(self.move("LEFT", 7))
+
+        return children
 
     def path(self) -> List["State"]:
-        """Retorna a sequência de estados do estado inicial até este."""
-        # TODO: implemente a reconstrução do caminho usando self.parent
-        raise NotImplementedError
+        states = []
+        current = self
+
+        while current is not None:
+            states.append(current)
+            current = current.parent
+
+        states.reverse()
+        return states
 
     def actions(self) -> List[str]:
         """Retorna a sequência de ações do estado inicial até este."""
-        # TODO: implemente usando path()
-        raise NotImplementedError
+        
+        actions = []
+
+        for state in self.path()[1:]:
+                actions.append(state.action)
+
+        return actions
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, State) and self.tiles == other.tiles
@@ -51,9 +112,9 @@ class State:
     def __repr__(self) -> str:
         t = self.tiles
         return (
-            f"+-------+\n"
+            f"\n+-------+\n"
             f"| {t[0]} {t[1]} {t[2]} |\n"
             f"| {t[3]} {t[4]} {t[5]} |\n"
             f"| {t[6]} {t[7]} {t[8]} |\n"
-            f"+-------+"
+            f"+-------+\n"
         ).replace("0", " ")
